@@ -1,11 +1,25 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
+:Menu
 title tiny11 builder alpha
 echo Welcome to the tiny11 image creator!
+
+ECHO [C]reate Image
+ECHO Clean [W]orkspace
+ECHO [Q]uit
+
+CHOICE /C CWQ /M "Choose a path: "
+
+if %ERRORLEVEL% EQU 1 goto Create
+if %ERRORLEVEL% EQU 2 goto WIM
+if %ERRORLEVEL% EQU 3 goto Stop
+
+
 timeout /t 3 /nobreak > nul
 cls
 
+:Create
 set DriveLetter=
 set /p DriveLetter=Please enter the drive letter for the Windows 11 image: 
 set "DriveLetter=%DriveLetter%:"
@@ -87,8 +101,6 @@ echo Removing Video...
 dism /image:c:\scratchdir /Remove-ProvisionedAppxPackage /PackageName:Microsoft.ZuneVideo_2022.507.446.0_neutral_~_8wekyb3d8bbwe
 echo Removing Family...
 dism /image:c:\scratchdir /Remove-ProvisionedAppxPackage /PackageName:MicrosoftCorporationII.MicrosoftFamily_2022.507.447.0_neutral_~_8wekyb3d8bbwe
-echo Removing QuickAssist...
-dism /image:c:\scratchdir /Remove-ProvisionedAppxPackage /PackageName:MicrosoftCorporationII.QuickAssist_2022.507.446.0_neutral_~_8wekyb3d8bbwe
 echo Removing Teams...
 dism /image:c:\scratchdir /Remove-ProvisionedAppxPackage /PackageName:MicrosoftTeams_23002.403.1788.1930_x64__8wekyb3d8bbwe
 echo Removing Cortana...
@@ -226,6 +238,15 @@ pause
 echo Performing Cleanup...
 rd c:\tiny11 /s /q 
 rd c:\scratchdir /s /q 
+
+Goto Menu
+
+:WIM
+
+DISM /Cleanup-WIM
+goto Menu
+
+
 exit
 
 
